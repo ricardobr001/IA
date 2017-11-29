@@ -1,3 +1,5 @@
+#coding: utf-8
+
 import sys
 
 class Dado:
@@ -9,7 +11,13 @@ class Dado:
 vetor = []
 
 # Abrindo o arquivo passado pela linha de comando
-arquivo = open(sys.argv[1], 'r')
+try:
+    arquivo = open(sys.argv[1], 'r')
+except IOError:
+    print 'Erro!!'
+    print 'Não foi possível abrir o arquivo (' + sys.argv[1] + ').'
+    print '\n\nMODO DE USAR: python k-media.py nome_do_arquivo.txt'    
+    exit()
 
 # Ignorando primeira linha do arquivo
 arquivo.next()
