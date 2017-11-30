@@ -1,0 +1,3 @@
+# Ignorando todos os arquivos .txt e .clu
+*.txt
+*.clu
