@@ -21,6 +21,10 @@ campo_d2 = []   # Vetor campo d2
 qtdd = []       # Vetor da quantidade
 centroide = []  # Vetor dos centroides
 
+if len(sys.argv) != 2:
+    print 'MODO DE USAR: python k-media.py arquivo_dados.txt arquivo_clusters.clu'
+    exit()
+
 # Abrindo o arquivo passado pela linha de comando
 try:
     arquivo_dados = open(sys.argv[1], 'r')
