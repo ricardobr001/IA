@@ -21,7 +21,7 @@ campo_d2 = []   # Vetor campo d2
 qtdd = []       # Vetor da quantidade
 centroide = []  # Vetor dos centroides
 
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
     print 'MODO DE USAR: python k-media.py arquivo_dados.txt arquivo_clusters.clu'
     exit()
 
@@ -63,7 +63,6 @@ for line1 in arquivo_cluster:
 
     if maior < c:
         maior = c
-        print maior
 
     # Inserindo no vetor de dados
     vetor[i].cluster_atual =  c
@@ -83,45 +82,44 @@ while True:
     for i in range(len(vetor)):
         campo_d1[vetor[i].cluster_atual] += vetor[i].d1
         campo_d2[vetor[i].cluster_atual] += vetor[i].d2
-        qtdd[vetor[i].cluster_atual] += 1
-            
+        qtdd[vetor[i].cluster_atual] += 1            
 
     # Calculando a média do centroide
     for i in range(len(qtdd)):
-        centroide[i][0], centroide[i][1] = (campo_d1[i] / qtdd[i]), (campo_d2[i] / qtdd[i])
+        if qtdd[i] != 0:
+            centroide[i][0], centroide[i][1] = (campo_d1[i] / qtdd[i]), (campo_d2[i] / qtdd[i])
+        else:
+            centroide[i][0], centroide[i][1] = -1, -11
 
     iteracao += 1
-    print 'interação:', iteracao
+    print '\ninteração:', iteracao
 
     for i in range(len(centroide)):
-        print 'Centroide', i+1,': (', centroide[i][0], ',', centroide[i][1], ')'
-
+        print 'Centroide', i,': (', centroide[i][0], ',', centroide[i][1], ')'
 
     if iteracao == 1:
         # Calculando a distância euclidiana de cada objeto aos centroides
         for i in range(len(vetor)):
             for j in range(len(centroide)):
-                vetor[i].dist.insert(len(vetor[i].dist), math.sqrt(math.pow(vetor[i].d1 - centroide[j][0], 2) + math.pow(vetor[i].d2 - centroide[j][1], 2)))
-                # vetor[i].dist.insert(len(vetor[i].dist), math.sqrt(math.pow(vetor[i].d1 - centroide[j][0], 2) + math.pow(vetor[i].d2 - campo_d2[1], 2)))
+                if centroide[j][0] != -1:
+                    vetor[i].dist.insert(len(vetor[i].dist), math.sqrt(math.pow(vetor[i].d1 - centroide[j][0], 2) + math.pow(vetor[i].d2 - centroide[j][1], 2)))
     else:
         for i in range(len(vetor)):
             for j in range(len(centroide)):
-                vetor[i].dist[j] = math.sqrt(math.pow(vetor[i].d1 - centroide[j][0], 2) + math.pow(vetor[i].d2 - centroide[j][1], 2))
-                # vetor[i].dist[1] = math.sqrt(math.pow(vetor[i].d1 - campo_d1[1], 2) + math.pow(vetor[i].d2 - campo_d2[1], 2))
+                if centroide[j][0] != -1:
+                    vetor[i].dist[j] = math.sqrt(math.pow(vetor[i].d1 - centroide[j][0], 2) + math.pow(vetor[i].d2 - centroide[j][1], 2))
+
+    cluster_atual, cluster_anterior = 0, 0
 
     # Associando cada objeto ao centroide mais próximo
     for i in range(len(vetor)):
-        menor_dist = 999999999999
+        menor_dist = 999
+
         for j in range(len(centroide)):
-            # print 'distancia',j,'-', vetor[i].dist[j]
-            if vetor[i].dist[j] < menor_dist:
+            if ((vetor[i].dist[j] < menor_dist) & (vetor[i].dist[j] > 0)):
                 menor_dist, cluster_anterior, cluster_atual = vetor[i].dist[j], vetor[i].cluster_atual, j
         
         vetor[i].cluster_atual, vetor[i].cluster_anterior = cluster_atual, cluster_anterior
-        # print 'Menor distancia -', menor_dist
-        # print 'Cluster anterior -', vetor[i].cluster_anterior
-        # print 'Cluster atual -', vetor[i].cluster_atual
-        # time.sleep(10)
     
     flag = False
 
@@ -133,3 +131,9 @@ while True:
     
     if not flag:    # Se não houve mudança, para o algoritmo
         break
+
+    # Zerando variaveis para novo calculo
+    for i in range(len(campo_d1)):
+        campo_d1[i] = 0
+        campo_d2[i] = 0
+        qtdd[i] = 0
