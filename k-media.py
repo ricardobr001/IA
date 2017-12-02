@@ -30,16 +30,14 @@ try:
     arquivo_dados = open(sys.argv[1], 'r')
 except IOError:
     print 'Erro!!'
-    print 'Não foi possível abrir o arquivo (' + sys.argv[1] + ').'
-    print '\n\nMODO DE USAR: python k-media.py arquivo_dados.txt arquivo_clusters.clu'    
+    print 'Não foi possível abrir o arquivo (' + sys.argv[1] + ').'  
     exit()
 
 try:
     arquivo_cluster = open(sys.argv[2], 'r')
 except IOError:
     print 'Erro!!'
-    print 'Não foi possível abrir o arquivo (' + sys.argv[2] + ').'
-    print '\n\nMODO DE USAR: python k-media.py arquivo_dados.txt arquivo_clusters.clu'    
+    print 'Não foi possível abrir o arquivo (' + sys.argv[2] + ').'  
     exit()
 
 # Ignorando primeira linha do arquivo
@@ -89,13 +87,13 @@ while True:
         if qtdd[i] != 0:
             centroide[i][0], centroide[i][1] = (campo_d1[i] / qtdd[i]), (campo_d2[i] / qtdd[i])
         else:
-            centroide[i][0], centroide[i][1] = -1, -11
+            centroide[i][0], centroide[i][1] = -1, -1
 
     iteracao += 1
     print '\ninteração:', iteracao
 
     for i in range(len(centroide)):
-        print 'Centroide', i,': (', centroide[i][0], ',', centroide[i][1], ')'
+        print 'Centroide', i,': (', centroide[i][0], ',', centroide[i][1], ')\t\tQuantidade : (', qtdd[i], ')'
 
     if iteracao == 1:
         # Calculando a distância euclidiana de cada objeto aos centroides
