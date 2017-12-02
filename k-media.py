@@ -1,8 +1,14 @@
 #coding: utf-8
 
+########################################################
+# Nome: Leonardo Zaccarias              RA: 620491     #
+# Nome: Ricardo Mendes Leal Junior      RA: 562262     #
+# Nome: Vitor Pratali Camillo           RA: 620181     #
+# Nome: Gabriel Peres de Andrade        RA: 726517     #
+########################################################
+
 import sys
 import math
-import time
 
 # Definindo o objeto Dado
 class Dado:
