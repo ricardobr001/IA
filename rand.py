@@ -15,6 +15,7 @@ vetor_calculado = []    # Vetor com os clusters calculado por determinado algori
 
 if len(sys.argv) != 3:
     print 'MODO DE USAR: <real.clu> <calculado.clu>'
+    exit()
 
 # Abrindo o arquivo passado pela linha de comando
 try:
@@ -36,7 +37,7 @@ for line in real:
     vetor_real.insert(len(vetor_real), int(line.split()[1]))
 
 # Lendo os dados do arquivo calculado
-for line in real:
+for line in calculado:
     vetor_calculado.insert(len(vetor_calculado), int(line.split()[1]))
 
 res = metrics.adjusted_rand_score(vetor_real, vetor_calculado)
