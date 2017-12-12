@@ -24,9 +24,9 @@ class Clust:
         self.dist = []        
 
 
-cluster[] 
-quantidade[]
-vetor[] #objetos
+cluster = [] 
+quantidade = []
+vetor = [] #objetos
 
 qtdd_dados = 0
 
@@ -53,7 +53,7 @@ for line in arquivo_dados:
     d2 = float(line.split()[2])
     # Inserindo no vetor de dados
     vetor.insert(len(vetor), Dado(nome, d1, d2))    
-    cluster.append([Clust(qtdd_dados)])
+    cluster.append(Clust(qtdd_dados))
     qtdd_dados += 1
 
 #Aqui ja temos cada lugar de um Cluster como um Objeto
@@ -61,36 +61,66 @@ for line in arquivo_dados:
 #Calcular distancia de um elemento para todos os elementos e inserindo no cluster
 for i in range(len(cluster)):
     for j in range(len(vetor)):    
-        if j > i:
+        if i > j:
             break
         else: 
             cluster[i].dist.append(math.sqrt(math.pow(vetor[j].d1 - vetor[i].d1 , 2) + math.pow(vetor[j].d2 - vetor[i].d2 , 2)))
+
+# for i in range(0, 10):
+#     print 'dist =', cluster[0].dist[i]
+# sys.exit()
 
 # quais os Objetos mais pertos
 menores_dist=[]
 for i in range(len(cluster)):
     dist = 9999999999999
     k = False
+    # print "i =", i
     for j in range(len(cluster[i].dist)):
-        if cluster[i].dist[j] < dist and i != j:
+        # print "j =", j
+        if cluster[i].dist[j] < dist and j != 0:
             dist = cluster[i].dist[j]
-            if !k:
+            if not k:
                 menores_dist.insert(i,[cluster[i].dist[j], i, j])
                 k = True
             else:
-                menores_dist.[i] = [cluster[i].dist[j], i, j])
+                menores_dist[i] = [cluster[i].dist[j], i, j]
 
 menores_dist = sorted(menores_dist,key=itemgetter(0))
 
 #limpando distancias 
 for i in range(len(cluster)):
-    del cluster[1]
+    cluster[i].dist = []
 
 while qtdd_dados != int(sys.argv[3]):
     #juntar I E J
-    cluster[menores_dist[0][1]].append(menores_dist[0][2])
-     
+    for i in range(len(menores_dist)):
+        cluster[menores_dist[0][1]].dist.append(menores_dist[0][2])
+        if i == 5:
+            sys.exit()
+        for j in range(len(menores_dist)):
+            if menores_dist[i][2] == menores_dist[j][1]:
+                menores_dist[j][1] = menores_dist[i][1]
+
+        del cluster[menores_dist[0][2]]
+        del menores_dist[0]
+
+    #remover o outro cluster
     qtdd_dados -= 1
+
+final = []
+for i in range(len(cluster)):
+    for j in range(len(cluster[i].dist)):
+        final.append([vetor[cluster[i].dist[j]].nome, i]) # 
+
+final = sorted(final, key=itemgetter(0))
+
+# Abrindo arquivo de saida
+arquivo_saida = open(sys.argv[2], 'w')
+
+# Imprimindo resultados no arquivo
+for i in range(len(final)):
+    arquivo_saida.write(final[i][0] + ' ' + str(final[i][1]) + '\n')
 #achamos a menor distancia geral
 # Junta o mais perto
 # Atualiza a distancia desse Cluster aos outros
