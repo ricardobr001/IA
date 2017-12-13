@@ -21,10 +21,45 @@ class Dado:
 class Clust:
     def __init__(self,vet):
         self.vet = vet
-        self.dist = []        
+        self.dist = []
+
+def find(x):
+    global cluster_final
+
+    if cluster_final[x][0] != x:
+        cluster_final[x][0] = find(cluster_final[x][0])
+    return cluster_final[x][0]
+
+def union(x, y):
+    global cluster_final
+
+    raizX_pai = find(x)
+    raizY_pai = find(y)
+
+    if raizX_pai == raizY_pai:  # Se os dois estiverem no mesmo cluster (mesmos pais)
+        return  # Sai sem fazer nada
+
+    if cluster_final[raizX_pai][1] < cluster_final[raizY_pai][1]:   # Se nnão estiverem no mesmo nível, unimos eles
+        cluster_final[raizX_pai][0] = raizY_pai
+    elif cluster_final[raizX_pai][1] > cluster_final[raizY_pai][1]:
+        cluster_final[raizY_pai][0] = raizX_pai
+    else:
+        cluster_final[raizY_pai][0] = raizX_pai
+        cluster_final[raizX_pai][1] += 1
+
+def qtdd_pais(vet):
+    global pais
+
+    pais = []
+    for i in range(len(vet)):
+        if vet[i][0] in pais:
+            pass
+        else:
+            pais.append(vet[i][0])
+    return len(pais)
 
 
-cluster = [] 
+cluster = []
 quantidade = []
 vetor = [] #objetos
 
@@ -52,7 +87,7 @@ for line in arquivo_dados:
     d1 = float(line.split()[1])
     d2 = float(line.split()[2])
     # Inserindo no vetor de dados
-    vetor.insert(len(vetor), Dado(nome, d1, d2))    
+    vetor.insert(len(vetor), Dado(nome, d1, d2))
     cluster.append(Clust(qtdd_dados))
     qtdd_dados += 1
 
@@ -63,7 +98,7 @@ for i in range(len(cluster)):
     for j in range(len(vetor)):
         if i > j:
             pass
-        else: 
+        else:
             cluster[i].dist.append(math.sqrt(math.pow(vetor[j].d1 - vetor[i].d1 , 2) + math.pow(vetor[j].d2 - vetor[i].d2 , 2)))
 
 # quais os Objetos mais pertos
@@ -82,72 +117,22 @@ for i in range(len(cluster)):
 
 menores_dist = sorted(menores_dist, key=itemgetter(0))
 
-#limpando distancias 
-for i in range(len(cluster)):
-    cluster[i].dist = []
-
+cluster_final = []
 for i in range(len(vetor)):
-    cluster_final = [[i]]
+    cluster_final.append([i, 0])    # Todo cara é seu próprio pai e está no nível 0
 
-inseridos = []
-
+# while qtdd_pais(cluster_final) != int(sys.argv[3]):   # Enquanto não chegar na quantidade desejada de clusters
+pais = []
 for i in range(len(menores_dist)):
-    flag = False
-    for j in range(len(cluster_final)):
-        if menores_dist[i][1] in cluster_final[j] and menores_dist[i][2] in cluster_final[j]:   # Ambos já estão no mesmo cluster
-            flag = True
-            break
-        elif menores_dist[i][1] in cluster_final[j]:    # Só o primeiro está no cluster
-            cluster_final[j].append(menores_dist[i][2]) # Colocamos o segundo no cluster
-            flag = True
-            break
-        elif menores_dist[i][2] in cluster_final[j]:    # Só o segundo está no cluster
-            cluster_final[j].append(menores_dist[i][1]) # Colocamos o primeiro no cluster
-            flag = True
+    union(menores_dist[i][1], menores_dist[i][2])
+
+    if qtdd_pais(cluster_final) == int(sys.argv[3]):    # Se chagar na quantidade desejada de cluster, para!
             break
 
-    if not flag:    # Se Não colocamos nenhum dos dois em nenhum cluster, eles são um novo cluster
-        cluster_final.append([menores_dist[i][1], menores_dist[i][2]])        
-            
-
-# while len(cluster_final) != int(sys.argv[3]):
-#     #juntar I E J
-#     for j in range(len(menores_dist)):
-#         # cluster[menores_dist[0][1]].dist.append(menores_dist[0][2])
-#         pos, inserir = menores_dist[j][1], menores_dist[j][2]       # Para inserir no cluster
-#         for k in range(len(cluster_final)):
-#             # if menores_dist[0][1] == menores_dist[j][1]:
-#             #     menores_dist[j][1] = menores_dist[0][1]
-#             if in cluster_final[k]:  # Se ele estiver em algum cluster, marcamos a flag com True
-#                 if k == pos:    # Se for a posição for a  que eu queria inserir
-#                     break
-#                 else:   # Se não
-#                     pos = k     # Atualizamos a 
-#                     break 
-
-#         cluster[pos].dist.append(inserir)
-    
-#     for j in range(len(cluster)):
-#         if not cluster[i].dist:  # Se o vetor estiver vazio
-#             pass
-#         else:   # Se tiver conteudo
-#             cluster_final = cluster[i].dist     # Copia o conteudo para o final
-
-
-#         print j
-#         print 'cluster =', len(menores_dist)
-#         del cluster[menores_dist[0][2]]
-#         del menores_dist[0]
-#         if j <= i:
-#             break
-        
-    #remover o outro cluster
-    # qtdd_dados -= 1
-
+pais = sorted(pais)
 final = []
-for i in range(len(cluster)):
-    for j in range(len(cluster[i].dist)):
-        final.append([vetor[cluster[i].dist[j]].nome, i]) # 
+for i in range(len(cluster_final)):
+    final.append([vetor[i].nome, pais.index(cluster_final[i][0])]) #
 
 final = sorted(final, key=itemgetter(0))
 
