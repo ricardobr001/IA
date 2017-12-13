@@ -91,8 +91,6 @@ for line in arquivo_dados:
     cluster.append(Clust(qtdd_dados))
     qtdd_dados += 1
 
-#Aqui ja temos cada lugar de um Cluster como um Objeto
-
 #Calcular distancia de um elemento para todos os elementos e inserindo no cluster
 for i in range(len(cluster)):
     for j in range(len(vetor)):
@@ -115,26 +113,25 @@ for i in range(len(cluster)):
             else:
                 menores_dist[i] = [cluster[i].dist[j], i, j]
 
-menores_dist = sorted(menores_dist, key=itemgetter(0))
+menores_dist = sorted(menores_dist, key=itemgetter(0))  # Ordenando as distâncias
 
 cluster_final = []
 for i in range(len(vetor)):
     cluster_final.append([i, 0])    # Todo cara é seu próprio pai e está no nível 0
 
-# while qtdd_pais(cluster_final) != int(sys.argv[3]):   # Enquanto não chegar na quantidade desejada de clusters
 pais = []
-for i in range(len(menores_dist)):
-    union(menores_dist[i][1], menores_dist[i][2])
+for i in range(len(menores_dist)):  # Andando o vetor menores_dist, com certeza não iremos andar ele inteiro
+    union(menores_dist[i][1], menores_dist[i][2])   # Fazendo a união dos clusters
 
     if qtdd_pais(cluster_final) == int(sys.argv[3]):    # Se chagar na quantidade desejada de cluster, para!
             break
 
-pais = sorted(pais)
-final = []
+pais = sorted(pais) # Ordenando o vetor pais
+final = []  # inicializa o vetor final para imprimir no arquivo
 for i in range(len(cluster_final)):
-    final.append([vetor[i].nome, pais.index(cluster_final[i][0])]) #
+    final.append([vetor[i].nome, pais.index(cluster_final[i][0])])  # Montando o vetor
 
-final = sorted(final, key=itemgetter(0))
+final = sorted(final, key=itemgetter(0))    # Ordenando o vetor pelo nome
 
 # Abrindo arquivo de saida
 arquivo_saida = open(sys.argv[2], 'w')
@@ -142,7 +139,3 @@ arquivo_saida = open(sys.argv[2], 'w')
 # Imprimindo resultados no arquivo
 for i in range(len(final)):
     arquivo_saida.write(final[i][0] + ' ' + str(final[i][1]) + '\n')
-#achamos a menor distancia geral
-# Junta o mais perto
-# Atualiza a distancia desse Cluster aos outros
-# Continua o Ciclo ate chegar a X interaçoes
