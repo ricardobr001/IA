@@ -11,6 +11,7 @@ import sys
 import math
 import random
 from operator import itemgetter
+
 # Definindo o objeto Dado
 class Dado:
     def __init__(self, nome, d1, d2):

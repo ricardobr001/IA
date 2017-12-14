@@ -14,7 +14,7 @@ vetor_real = []         # Vetor com os clusters reais
 vetor_calculado = []    # Vetor com os clusters calculado por determinado algoritmo
 
 if len(sys.argv) != 3:
-    print 'MODO DE USAR: <real.clu> <calculado.clu>'
+    print 'MODO DE USAR: python rand.py <real.clu> <calculado.clu>'
     exit()
 
 # Abrindo o arquivo passado pela linha de comando
