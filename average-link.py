@@ -93,7 +93,7 @@ while len(matriz_dist) != int(sys.argv[3]):
     for i in range(len(matriz_dist)):
         for j in range(len(matriz_dist[i])):
             if matriz_dist[i][j] < menor and j != i and matriz_dist[i][j] != -1:
-                menor, a, b = matriz_dist[i][j], i + (qtdd_dados - len(matriz_dist)), j + (qtdd_dados - len(matriz_dist))
+                menor, a, b, i_real, j_real = matriz_dist[i][j], i + (qtdd_dados - len(matriz_dist)), j + (qtdd_dados - len(matriz_dist)), i, j
 
     # 'a' linha, 'b' coluna
     # Agrupando a com b
@@ -107,25 +107,25 @@ while len(matriz_dist) != int(sys.argv[3]):
 
     # Diminui uma coluna
     for i in range(len(matriz_dist)):
-        del matriz_dist[i][b]
+        del matriz_dist[i][j_real]
 
-    del matriz_dist[a]          # Diminui uma linha
+    del matriz_dist[i_real]          # Diminui uma linha
 
     # Recalculando a coluna
     for i in range(len(matriz_dist)):
-        matriz_dist[i][b] = 0
+        matriz_dist[i][j_real] = 0
         for j in range(len(cluster[b].grupo)):
-            matriz_dist[i][b] += math.sqrt(math.pow(vetor[i].d1 - vetor[cluster[b].grupo[j]].d1, 2) + math.pow(vetor[i].d2 - vetor[cluster[b].grupo[j]].d2, 2))
+            matriz_dist[i][j_real] += math.sqrt(math.pow(vetor[i].d1 - vetor[cluster[b].grupo[j]].d1, 2) + math.pow(vetor[i].d2 - vetor[cluster[b].grupo[j]].d2, 2))
 
-        matriz_dist[i][b] = matriz_dist[i][b] / len(cluster[b].grupo) # Divide pelo total de objetos no cluster
+        matriz_dist[i][j_real] = matriz_dist[i][j_real] / len(cluster[b].grupo) # Divide pelo total de objetos no cluster
 
     # Recalculando a linha
-    for i in range(len(matriz_dist[a])):
-        matriz_dist[a][i] = 0
+    for i in range(len(matriz_dist[i_real])):
+        matriz_dist[i_real][i] = 0
         for j in range(len(cluster[a].grupo)):
-            matriz_dist[a][i] += math.sqrt(math.pow(vetor[i].d1 - vetor[cluster[a].grupo[j]].d1, 2) + math.pow(vetor[i].d2 - vetor[cluster[a].grupo[j]].d2, 2))
+            matriz_dist[i_real][i] += math.sqrt(math.pow(vetor[i].d1 - vetor[cluster[a].grupo[j]].d1, 2) + math.pow(vetor[i].d2 - vetor[cluster[a].grupo[j]].d2, 2))
 
-        matriz_dist[a][i] = matriz_dist[a][i] / len(cluster[a].grupo)
+        matriz_dist[i_real][i] = matriz_dist[i_real][i] / len(cluster[a].grupo)
 
     timestr = '\rTemos %d clusters!' % (len(matriz_dist))
     sys.stdout.write(timestr)
