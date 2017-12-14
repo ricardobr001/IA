@@ -127,7 +127,9 @@ while len(matriz_dist) != int(sys.argv[3]):
 
         matriz_dist[a][i] = matriz_dist[a][i] / len(cluster[a].grupo)
 
-    print 'Temos %d clusters!' % (len(matriz_dist))
+    timestr = '\rTemos %d clusters!' % (len(matriz_dist))
+    sys.stdout.write(timestr)
+    sys.stdout.flush()
 
 tamanhos, maior = [], 0
 for i in range(len(cluster)):
