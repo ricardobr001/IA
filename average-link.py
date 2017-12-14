@@ -51,7 +51,6 @@ if len(sys.argv) != 4:
     print 'MODO DE USAR: python average-link.py <entrada.txt> <saida.clu> <quantidade_de_clusters>'
     exit()
 
-
 # Abrindo o arquivo passado pela linha de comando
 try:
     arquivo_dados = open(sys.argv[1], 'r')
@@ -94,11 +93,17 @@ while len(matriz_dist) != int(sys.argv[3]):
     for i in range(len(matriz_dist)):
         for j in range(len(matriz_dist[i])):
             if matriz_dist[i][j] < menor and j != i and matriz_dist[i][j] != -1:
-                menor, a, b = matriz_dist[i][j], i, j
+                menor, a, b = matriz_dist[i][j], i + (qtdd_dados - len(matriz_dist)), j + (qtdd_dados - len(matriz_dist))
 
     # 'a' linha, 'b' coluna
-    cluster[b].grupo.append(a)  # Agrupando a com b
-    cluster[a].grupo.append(b)
+    # Agrupando a com b
+    for i in range(len(cluster[a].grupo)):
+        if cluster[a].grupo[i] not in cluster[b].grupo:
+            cluster[b].grupo.append(cluster[a].grupo[i])
+
+    for i in range(len(cluster[b].grupo)):
+        if cluster[b].grupo[i] not in cluster[a].grupo:
+            cluster[a].grupo.append(cluster[b].grupo[i])
 
     # Diminui uma coluna
     for i in range(len(matriz_dist)):
@@ -123,3 +128,27 @@ while len(matriz_dist) != int(sys.argv[3]):
         matriz_dist[a][i] = matriz_dist[a][i] / len(cluster[a].grupo)
 
     print 'Temos %d clusters!' % (len(matriz_dist))
+
+tamanhos, maior = [], 0
+for i in range(len(cluster)):
+    if maior < len(cluster[i].grupo):
+        maior = len(cluster[i].grupo)
+        if len(tamanhos) > int(sys.argv[3]):
+            del tamanhos[0]     # Se já atingiu o limite, deleta a primeira posição
+            tamanhos.append(i)  # Insere a nova
+        else:
+            tamanhos.append(i)  # Caso contrario, só insere a nova maior
+
+final = []
+for i in range(len(tamanhos)):
+    for j in range(len(cluster[tamanhos[i]].grupo)):
+        final.append([vetor[cluster[tamanhos[i].grupo[j]]], i])
+
+final = sorted(final, key=itemgetter(0))    # Ordenando o vetor pelo nome
+
+# Abrindo arquivo de saida
+arquivo_saida = open(sys.argv[2], 'w')
+
+# Imprimindo resultados no arquivo
+for i in range(len(final)):
+    arquivo_saida.write(final[i][0] + ' ' + str(final[i][1]) + '\n')
